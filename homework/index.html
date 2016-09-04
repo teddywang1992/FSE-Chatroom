@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>chatrooom</title>
+
+</head>
+
+<style>
+
+#chatForm{
+  display:none
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages li {
+    padding: 5px 10px;
+}
+
+#messages li:nth-child(odd) {
+    background: #eee;
+}
+
+form button {
+    width: 9%;
+    background: rgb(51, 161, 201);
+    border: none;
+    padding: 10px;
+}
+
+#m {
+    border: 0;
+    padding: 10px;
+    width: 80%;
+    background: rgb(245, 245, 245);
+    margin-right: .5%;
+}
+
+#send {
+    border: 10;
+    padding: 10px;
+    width: 90%;
+    background: rgb(0, 199, 140);
+    margin-right: .5%;
+}
+
+#n {
+  border: 0;
+  padding: 10px;
+  width: 80%;
+  background: rgb(245, 245, 245);
+  margin-right: .4%;
+}
+
+
+
+</style>
+
+<body>
+
+    <div id="nameForm">
+      <h2>Please set your name.</h2>
+    <form id="name" action="submit">
+        <input id="n" autocomplete="off">
+        <button>Set Name</button>
+    </form>
+    </div>
+
+    <div id="chatForm">
+    <ul id="messages"></ul>
+    <form id="send" action="submit">
+        <input id="m" autocomplete="off" />
+        <button>Send</button>
+    </form>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+
+
+        var socket = io.connect();
+        var name;
+        $('#name').submit(function(){
+            $('#nameForm').hide();
+            $('#chatForm').show();
+            socket.emit('new message','welcome   '+ $('#n').val() + ' to our chatroom ' + '(' + showTime() + ')');
+            name = $('#n').val();
+            $('#n').val('');
+            return false;
+        });
+        $('#send').submit(function() {
+        //  var name = $('#n').val();
+            socket.emit('new message', name + '  says to all: ' + $('#m').val() + '  ' + '(' + showTime() + ')');
+            // $('#messages').append('<li>' + $('#m').val() + ' ' + '</li>');
+            $('#m').val('');
+            return false;
+        });
+
+        socket.on('msg list',function(arr){
+          for (i = 0; i < arr.length; i++) {
+            $('#messages').append($('<li>').text(arr[i].msg));
+          }
+        });
+
+        socket.on('msg', function(msg) {
+          $('#messages').append($('<li>').text(msg));
+        });
+
+        // get the timestamp
+        function showTime() {
+          var date = new Date();
+          var year = date.getFullYear();
+          var month = date.getMonth() + 1;
+          month = (month < 10 ? ('0' + month) : month);
+          var day = (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate());
+          var hour = (date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours());
+          var min = (date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes());
+          var sec = (date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds());
+          var time = month + '/' + day + '/' + year + ' ' + hour + ':' + min + ':' + sec;
+          return time;
+        }
+
+    </script>
+</body>
+
+</html>

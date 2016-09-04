@@ -1,0 +1,16 @@
+{
+  "name": "fsechat",
+  "version": "1.0.0",
+  "description": "18652 project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "YanxingWang",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongodb": "^2.2.8",
+    "socket.io": "^1.4.8"
+  }
+}
